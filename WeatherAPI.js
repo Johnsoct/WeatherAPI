@@ -11,22 +11,16 @@ a 'Time Machine Request' returns the observed or forecast weather conditions for
 
 */
 
-var https = require('https');
-var darkSky = require('forecast.io');
-var options = {
-	APIKey: process.env.8a9dcd721c2c33b5f8d8a55d1ad70fde,
-	timeout: 1000
-};
-
-darkSky = new darkSky(options);
+var request = require('request');
+var param = process.argv[2];
+var APIKey = 8a9dcd721c2c33b5f8d8a55d1ad70fde;
 
 function printError(e){
 	console.error(e.message);
 }
 
-function get(cordinates) {
+function getWeather(cordinates) {
 	//connect to the forecast.io API
-	var APIKey = 8a9dcd721c2c33b5f8d8a55d1ad70fde;
 	var options = 'https://api.darksky.net/forecast/' + APIKey + '/' + cordinates;
 	var request = https.get(options, function(response) {
 		var body = '';
@@ -39,8 +33,10 @@ function get(cordinates) {
 		response.on('end', function () {
 			if (response.statusCode === 200) { //means 'OK'
 				try {
+
 					var weather = JSON.parse(body);
 					console.log("Timezone: " + weather.timezone + "\n Current Weather: " + weather.currently + "\n Daily Weather: " + weather.daily);
+
 				} catch(error) {
 					printError(error);
 				}
@@ -53,4 +49,4 @@ function get(cordinates) {
 	request.on('error', printError);
 }
 
-module.exports.get = get;
+module.exports.get = getWeather;
